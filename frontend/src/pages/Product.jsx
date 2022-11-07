@@ -2,8 +2,6 @@ import React, { useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { GlobalState } from '../GlobalState'
-
 
 
 const Product = () => {
@@ -13,11 +11,11 @@ const Product = () => {
   const [count, setCount] = useState(1)
   
   
-  const state = useContext(GlobalState);
-  const [products] = state.productsApi.products;
-  const addCart = state.userApi.addCart;
+  // const state = useContext(GlobalState);
+  // const [products] = state.productsApi.products;
+  // const addCart = state.userApi.addCart;
 
-  
+  const products = [];
 
   useEffect(() => {
     if(params.id) {

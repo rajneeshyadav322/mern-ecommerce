@@ -1,10 +1,9 @@
 import React, { useContext } from 'react'
 import { useEffect } from 'react';
-import { GlobalState } from '../GlobalState'
+
 
 const Success = () => {
-
-  const state = useContext(GlobalState);
+  
   const [cart, setCart] = state.userApi.cart;
   const emptyCart = state.userApi.emptyCart;
 

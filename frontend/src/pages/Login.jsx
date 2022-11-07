@@ -1,20 +1,21 @@
-import axios from 'axios'
 import React, { useContext } from 'react'
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { GlobalState } from '../GlobalState'
+import api from '../../axios/apiclient'
+import { login } from '../../axios/apis/authApi'
 import NotFound from './NotFound'
 
 const Login = () => {
 
-    const state = useContext(GlobalState)
-    const isLogged = state.userApi.isLogged[0];
+    // const state = useContext(GlobalState)
+    // const isLogged = state.userApi.isLogged[0];
+
+    const isLogged = false;
+    const dispatch = useDispatch();
 
     
-    if(isLogged)
-        return <NotFound/>
-
-
+    if(isLogged)    return <NotFound/>
         
     const [user, setUser] = useState({
         email: "",
@@ -36,19 +37,16 @@ const Login = () => {
     const loginSubmit = async (e) => {
         e.preventDefault();
 
+        if(!validateEmail(user.email))  return alert("Please enter a valid email.");  
+                
         try {
-
-            if(!validateEmail(user.email))  return alert("Please enter a valid email.");  
-
-            const res = await axios.post('http://localhost:5000/api/auth/login', {...user}, {withCredentials: true})
-
-            localStorage.setItem('firstLogin', true);
-
-
+            const res = await login(user);
+            localStorage.setItem('token', res?.data?.accessToken);
+            dispatch(getMyInfo());
             window.location.href = '/'
         }
         catch(err) {
-            alert(err.response)
+            alert(err?.response?.data?.msg)
         }
     }
 

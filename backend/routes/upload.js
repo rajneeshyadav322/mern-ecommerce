@@ -2,7 +2,7 @@ const router = require('express').Router();
 const cloudinary = require('cloudinary');
 const dotenv = require("dotenv");
 const fs = require('fs')
-const {verifyToken, verifyAdmin} = require('./verifyToken')
+const {verifyToken, verifyAdmin} = require('../controllers/verifyToken')
 
 
 dotenv.config();

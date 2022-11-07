@@ -10,7 +10,6 @@ import ProductsList from './pages/ProductsList'
 import Categories from './components/Categories'
 import Home from './pages/Home'
 import { Route, Routes } from 'react-router-dom'
-import { DataProvider } from './GlobalState'
 import NotFound from './pages/NotFound'
 import Footer from './components/Footer'
 import History from './pages/History'
@@ -21,7 +20,7 @@ import Cancel from './pages/Cancel'
 const App = () => {
 
   return (
-    <DataProvider>
+    <>
       <Navbar/>
       <Routes>
         <Route path='/' element={<Home />}></Route>
@@ -37,7 +36,7 @@ const App = () => {
         <Route path='*' exact element={<NotFound/>}> </Route>
       </Routes>
       <Footer />
-    </DataProvider>
+    </>
   )
 }
 

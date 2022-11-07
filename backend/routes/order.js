@@ -1,50 +1,15 @@
 const express = require('express')
-const { verifyTokenAndAuthorization, verifyAdmin, verifyToken } = require('./verifyToken')
-const Order = require('../models/order');
-const User = require('../models/user')
+const { verifyTokenAndAuthorization, verifyAdmin, verifyToken } = require('../controllers/verifyToken')
+const { createOrder, getAllOrders } = require('../controllers/order');
 const router = express.Router();
 
 
 // Create 
-router.post('/create', verifyToken, async (req, res) => {
-    try{
-        const user = await User.findById(req.user.id).select('name email')
-
-        if(!user)   return res.status(400).json({msg: "User does not exist"})
-
-        const {cart, orderId, address} = req.body;
-        const {_id, name, email} = user;
-
-        const newOrder = new Order({
-            user_id: _id,
-            name,
-            email,
-            orderId,
-            address,
-            cart,
-            
-        })
-        
-        await newOrder.save()
-        
-        return res.json({newOrder});
-    }
-    catch(err) {
-        return res.status(500).json({msg: err.message})
-    }
-})
+router.post('/create', verifyToken, createOrder)
 
 
 // GET ALL ORDERS 
-router.get('/', verifyToken, verifyAdmin, async (req, res) => {
-    try {
-        const orders = await Order.find();
-        res.status(200).json(orders);
-    } 
-    catch (err) {
-        res.status(500).json(err);
-    }
-})
+router.get('/', verifyToken, verifyAdmin, getAllOrders)
 
 
 // // UPDATE

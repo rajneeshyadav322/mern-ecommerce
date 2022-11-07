@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const userRoute = require('./routes/user')
 const authRoute = require('./routes/auth')
+const myAccountRoute = require('./routes/myAccount')
 const productRoute = require('./routes/product')
 const orderRoute = require('./routes/order')
 const categoryRoute = require('./routes/category')
@@ -17,8 +18,8 @@ const stripeRoute = require('./routes/stripe')
 dotenv.config();
 
 const corsOptions = {
-    origin: true,
-    credentials: true,
+    origin: "*",
+    // credentials: true,
 }
 
 app.use(cors(corsOptions))
@@ -30,6 +31,7 @@ app.use(fileUpload({
 
 
 app.use('/api/auth', authRoute);
+app.use('/api/my', myAccountRoute);
 app.use('/api/users', userRoute);
 app.use('/api/products', productRoute);
 app.use('/api/order', orderRoute);
@@ -49,6 +51,6 @@ mongoose.connect(process.env.MONGO_URL, {
 });
 
 
-app.listen(process.env.PORT || 4000, ()=>{
+app.listen(process.env.PORT, ()=>{
     console.log("Backend Server is running")
 })

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import api from '../apiclient';
 
 const ProductsApi = () => {
 
@@ -9,10 +10,10 @@ const ProductsApi = () => {
 
     const getProducts = async () => {
         try {
-            const res = await axios.get(
+            const res = await api.get(
                 category 
-                ? `http://localhost:5000/api/products?category=${category}` 
-                : 'http://localhost:5000/api/products')
+                ? `/api/products?category=${category}` 
+                : `/api/products`)
             
             setProducts(res.data);
         }

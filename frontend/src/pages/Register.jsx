@@ -1,16 +1,18 @@
 import { Checkbox } from '@mui/material'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 import NotFound from './NotFound'
-import { GlobalState } from '../GlobalState'
+import api from '../../axios/apiclient'
 
 const Register = () => {
 
-    const state = useContext(GlobalState)
-    const isLogged = state.userApi.isLogged[0];
+    // const state = useContext(GlobalState)
+    // const isLogged = state.userApi.isLogged[0];
 
-    if(isLogged)    return <NotFound/>
+    // const state = {    }
+    // const isLogged = true;
+
+    // if(isLogged)    return <NotFound/>
 
     const [user, setUser] = useState({
         username: "",
@@ -43,7 +45,7 @@ const Register = () => {
             
             if(!checked) return alert("Please accept the terms and conditions to proceed")
             
-            const res = await axios.post('http://localhost:5000/api/auth/register', {...user}, {withCredentials:true})
+            const res = await api.post('/api/auth/register', {...user})
             
             localStorage.setItem('firstLogin', true);
 

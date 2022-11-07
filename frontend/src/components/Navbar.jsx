@@ -4,21 +4,22 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { Badge } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Cart from '../pages/Cart';
-import { GlobalState } from '../GlobalState';
-import axios from 'axios';
+import api from '../../axios/apiclient';
 
 
 const Navbar = () => {
 
-    const state = useContext(GlobalState)
+    // const [isLogged] = state.userApi.isLogged;
+    // const [isAdmin] = state.userApi.isAdmin;
+    // const [cart] = state.userApi.cart;
 
-    const [isLogged] = state.userApi.isLogged;
-    const [isAdmin] = state.userApi.isAdmin;
-    const [cart] = state.userApi.cart;
+    const isLogged = localStorage.getItem('token');
+    const isAdmin = true;
+    const cart = []
 
     const logout = async () => {
         try {
-            await axios.get('http://localhost:5000/api/auth/logout', {withCredentials:true})
+            await api.get('/api/auth/logout')
             localStorage.clear();
             window.location.href = '/'
         }
