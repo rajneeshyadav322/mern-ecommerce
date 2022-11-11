@@ -1,4 +1,4 @@
-const { getMyInfo, emptyCart, addToCart, getMyCart } = require("../controllers/myAccount");
+const { getMyInfo, emptyCart, addToCart, getMyCart, updateCart } = require("../controllers/myAccount");
 const { verifyToken } = require("../controllers/verifyToken");
 const express = require('express')
 const router = express.Router();
@@ -6,7 +6,9 @@ const router = express.Router();
 //Add Product into Cart
 router.patch('/addcart', verifyToken, addToCart) 
 
-//empty cart
+router.post('/updateCart', verifyToken, updateCart) 
+
+//empty cart 
 router.put('/empty', verifyToken, emptyCart) 
 
 // get my info

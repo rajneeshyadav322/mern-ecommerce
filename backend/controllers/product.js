@@ -1,58 +1,74 @@
 const Product = require("../models/product");
 
 class APIFeatures {
-  constructor(query, queryString) {
-    this.query = query;
-    this.queryString = queryString;
+  constructor(queryObj) {
+    this.data = [];
+    this.queryObj = queryObj;
   }
 
-  filtering() {
-    const queryObj = { ...this.queryString };
-
-    const excludedFields = ["sort", "filter", "limit"];
-    excludedFields.forEach((e) => delete queryObj[e]);
-
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(
-      /\b(gte|gt|lt|lte|regex)\b/g,
-      (match) => "$" + match
-    );
-
-    this.query.find(JSON.parse(queryStr));
-
-    return this;
-  }
-
-  sorting() {
-    if (this.queryString.sort) {
-      const sortBy = this.queryString.sort.split(",").join(" ");
-      this.query = this.query.sort(sortBy);
-    } else {
-      this.query = this.query.sort("-createdAt");
+  async filterAndSort() {
+    let sortObj = {};
+    if (this.queryObj.sort == "newest") {
+      sortObj = { createdAt: -1 };
+    } else if (this.queryObj.sort == "oldest") {
+      sortObj = { createdAt: 1 };
+    } else if (this.queryObj.sort == "asc") {
+      sortObj = { price: 1 };
+    } else if (this.queryObj.sort == "desc") {
+      sortObj = { price: -1 };
     }
 
-    return this;
+    if(this.queryObj.category){
+      this.queryObj.category = `\\b${this.queryObj.category}\\b`
+    }
+    else {
+      this.queryObj.category= "."
+    }
+
+    if(this.queryObj.color){
+      this.queryObj.color= `\\b${this.queryObj.color}\\b`
+    }
+    else {
+      this.queryObj.color= "."
+    }
+
+    this.data = await Product.find({
+      $and: [
+        {
+          categories: {
+            $elemMatch: {
+              $regex: this.queryObj.category,
+            },
+          },
+        },
+        {
+          color: {
+            $elemMatch: {
+              $regex: this.queryObj.color,
+            },
+          },
+        },
+      ],
+    }).sort(sortObj);
   }
 
   paginating() {
-    const page = this.queryString.page * 1 || 1;
-    const limit = this.queryString.limit * 1 || 8;
-    const skip = (page - 1) * limit;
-    this.query = this.query.skip(skip).limit(limit);
-
-    return this;
+    // const page = this.queryString.page * 1 || 1;
+    // const limit = this.queryString.limit * 1 || 8;
+    // const skip = (page - 1) * limit;
+    // this.query = this.query.skip(skip).limit(limit);
+    // return this;
   }
 }
 
 const getAllProducts = async (req, res) => {
   try {
-    const features = new APIFeatures(Product.find(), req.query)
-      .filtering()
-      .sorting()
-      .paginating();
+    // console.log(req.query)
+    const features = new APIFeatures(req.query);
+    await features.filterAndSort();
 
-    const Products = await features.query;
-    // console.log(Products)
+    const Products = features.data;
+
     return res.status(200).json(Products);
   } catch (err) {
     return res.status(500).json(err);
@@ -127,5 +143,10 @@ const getProduct = async (req, res) => {
   }
 };
 
-
-module.exports = {getProduct, deleteProduct, updateProduct, createProduct, getAllProducts}
+module.exports = {
+  getProduct,
+  deleteProduct,
+  updateProduct,
+  createProduct,
+  getAllProducts,
+};

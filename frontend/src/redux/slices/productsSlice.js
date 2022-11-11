@@ -1,11 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../../../axios/apiclient";
+import axios from "axios";
+import { BASE_URL } from "../../../axios/constant";
 
 export const getProducts = createAsyncThunk(
   "products/getProducts",
-  async (thunkAPI) => {
+  async (data, thunkAPI) => {
     try {
-      const res = await api.get("/api/products");
+      let query = `${BASE_URL}/api/products/get?` 
+      const res = await axios.get(query, {
+        params: data
+      });
       return res?.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -25,6 +29,7 @@ const productsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getProducts.fulfilled, (state, action) => {
         state.loading = false;
+        console.log(action?.payload)
         state.error = "";
         state.products = action?.payload;
     });

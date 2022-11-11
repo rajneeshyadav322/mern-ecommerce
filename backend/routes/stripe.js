@@ -2,6 +2,7 @@ const express = require('express');
 const Order = require('../models/order');
 const stripe = require('stripe')(process.env.STRIPE_SEC)
 const router = express.Router();
+const dotenv = require('dotenv')
 
 
 router.post('/payment', async (req, res) => {
@@ -9,7 +10,7 @@ router.post('/payment', async (req, res) => {
     try {
         const customer = await stripe.customers.create({
             metadata: {
-                userId: req.body.userId,
+                userId: req.body.user_id,
                 products: JSON.stringify(req.body.products)
             }
         })
@@ -24,9 +25,11 @@ router.post('/payment', async (req, res) => {
             ],
             customer: customer.id,
             mode: 'payment',
-            success_url: 'http://localhost:3000/success',
-            cancel_url: 'http://localhost:3000/cancel',
+            success_url: `${process.env.FRONTEND_URL}/success`,
+            cancel_url: `${process.env.FRONTEND_URL}/cancel`,
         });
+
+        createOrder(customer, data)
 
         res.json(session.url);
     }
@@ -93,6 +96,8 @@ router.post('/webhook', express.raw({ type: 'application/json' }), (request, res
     if(eventType === 'checkout.session.completed') {
         stripe.customers.retrieve(data.customer)
         .then((customer)=> {
+
+            console.log("asdasdasdasdashvasghadvhfbashbd")
 
             createOrder(customer, data)
         }).catch((err) => {

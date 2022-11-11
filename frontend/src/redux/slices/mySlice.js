@@ -6,7 +6,7 @@ const initialState = {
     info: {},
     error: ""
 }
-
+ 
 export const getMyInfo = createAsyncThunk('myInfo/get', async (thunkAPI) => {
     const token = localStorage.getItem('token')
     try {
@@ -24,8 +24,43 @@ export const getMyInfo = createAsyncThunk('myInfo/get', async (thunkAPI) => {
 
 
 const mySlice = createSlice({
-    name: "myInfo",
+    name: "myInfo", 
     initialState: initialState,
+    reducers: {
+        incrementItem : (state, action) => {
+            for(let item of state?.info?.products) {
+                if(item?.product?._id == action.payload.product._id) {
+                    item.quantity++
+                    state.info.subTotal += item.product.price
+                    break;
+                }
+            }
+        },
+        decrementItem : (state, action) => {
+            for(let item of state?.info?.products) {
+                if(item?.product?._id == action.payload.product._id) {
+                    if(item.quantity > 1) {
+                        item.quantity--;
+                        state.info.subTotal -= item.product.price
+                    }   
+                    break;
+                }
+            }
+        },
+        removeItem(state, action) {
+            
+            const newCart = []
+            state.info.products.forEach((item) => {
+                if(item?.product?._id !== action.payload.product._id) {
+                    newCart.push(item);
+                }
+                else {
+                    state.info.subTotal -= (item.product.price*item.quantity)
+                }
+            })
+            state.info.products = newCart
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(getMyInfo.pending, (state, action) =>{
             state.loading = true
@@ -41,5 +76,7 @@ const mySlice = createSlice({
         })
     }
 })
+
+export const {incrementItem, decrementItem, removeItem} = mySlice.actions
 
 export const myReducer = mySlice.reducer;

@@ -14,6 +14,36 @@ const getMyInfo = async (req, res) => {
   }
 };
 
+const updateCart = async (req, res) => {
+  try{
+    if(req.body == {})  return res.status(400).json({msg: "User id not found"})
+
+    const user = await User.findById(req.body?._id);
+
+    if(!user) return res.status(400).json({msg: "User does not exist."})
+
+    const obj = req.body.products.map(item => {
+      return {
+        product: item.product._id,
+        quantity: item.quantity,
+        _id: item._id,
+      }
+    })
+
+    await User.findOneAndUpdate(
+      {_id: req.body._id },
+      {
+        products: obj,
+        subTotal: req.body.subTotal
+      })
+
+    return res.status(200).json({msg: "Cart Updated Successfully"})
+  }
+  catch(error) {
+    return res.status(500).json({msg: error.message})
+  }
+}
+
 const emptyCart = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -75,7 +105,7 @@ const addToCart = async (req, res) => {
       }
     );
 
-    return res.status(201).json({ msg: "Added to the cart" });
+    return res.status(201).json({ msg: "Added to the cart" }); 
   } catch (err) {
     return res.status(500).json({ msg: err.message });
   }
@@ -92,4 +122,4 @@ const getMyCart = async (req, res) => {
   }
 };
 
-module.exports = { getMyInfo, addToCart, emptyCart, getMyCart };
+module.exports = { getMyInfo, addToCart, emptyCart, getMyCart, updateCart };

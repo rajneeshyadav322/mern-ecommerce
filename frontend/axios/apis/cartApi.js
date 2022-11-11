@@ -9,9 +9,9 @@ export const addToCart = (item) => {
     })
 }
 
-export const removeFromCart = (item) => {
+export const updateCart = (item) => {
     const token = localStorage.getItem('token')
-    return api.patch('/api/my/addcart', item, {
+    return api.post('/api/my/updateCart', item, {
         headers: {
             Authorization: token
         }

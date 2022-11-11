@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
 import CartItem from "../components/CartItem";
 import { useSelector, useDispatch } from "react-redux";
 import api from "../../axios/apiclient";
 import { getMyCart } from "../redux/slices/cartSlice";
-import { getMyInfo } from "../redux/slices/mySlice";
+import { getMyInfo, myReducer } from "../redux/slices/mySlice";
+import { updateCart } from "../../axios/apis/cartApi";
+import { useMemo } from "react";
+import store from "../redux/store";
+import { createOrder } from "../../axios/apis/orderApi";
 
 const Cart = () => {
   // const state = useContext(GlobalState);
@@ -12,20 +16,18 @@ const Cart = () => {
   // const [user] = state.userApi.user;
 
   // const { cart, error, loading } = useSelector((store) => store?.cartReducer);
-  const {info, error, loading} = useSelector((store) => store?.myReducer);
+  const { info, error, loading } = useSelector((store) => store?.myReducer);
   const dispatch = useDispatch();
-
 
   const key = import.meta.env.VITE_STRIPE_KEY;
 
   useEffect(() => {
-    dispatch(getMyInfo())
-  },[])
-  
-  // useEffect(() => {
-  //   dispatch(getMyCart(info));
-  // }, [info]);
-
+    dispatch(getMyInfo());
+    return async () => {
+      await updateCart(store.getState().myReducer.info);
+      dispatch(getMyInfo());
+    };
+  }, []);
 
   if (!info?.products || info?.products?.length === 0)
     return (
@@ -34,31 +36,23 @@ const Cart = () => {
       </div>
     );
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    cart?.products?.forEach((element) => {
-      const { title, image, quantity, price } = element;
+    const products = []
+
+    info?.products?.forEach((element) => {
+      const { title, image, price } = element?.product;
       products.push({
         name: title,
         currency: "inr",
         images: [image],
         amount: price * 100,
-        quantity: quantity,
+        quantity: element.quantity,
       });
     });
 
-    try {
-      const res = await api.post("/api/checkout/payment", {
-        products: products,
-        userId: user._id,
-      });
-
-      // console.log(res.data)
-      window.location = res.data;
-    } catch (err) {
-      return console.log(err);
-    }
+    createOrder(products, info._id).then(res => console.log(res))
   };
 
   return (
@@ -79,7 +73,7 @@ const Cart = () => {
         <div className="md:flex-1 sm:p-8 w-full">
           <div className="flex w-full p-4 items-center justify-between flex-col">
             {info?.products?.map((item) => (
-              <CartItem item={item} key={item.productId} />
+              <CartItem item={item} key={item?.product?._id} />
             ))}
           </div>
         </div>
@@ -104,16 +98,15 @@ const Cart = () => {
           </div>
 
           {/* <Checkout
-                    name="E-Commerce Store"
-                    description={`Your total is ₹ ${total}`} // the pop-in header subtitle
-                    token={myToken}
-                    amount={total*100}
-                    currency="INR"
-                    stripeKey={key}
-                    billingAddress
-                    shippingAddress>
-
-                    </Checkout> */}
+            name="E-Commerce Store"
+            description={`Your total is ₹ ${total}`} // the pop-in header subtitle
+            token={myToken}
+            amount={total * 100}
+            currency="INR"
+            stripeKey={key}
+            billingAddress
+            shippingAddress
+          ></Checkout> */}
 
           <form>
             <button

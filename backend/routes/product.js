@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 // GET ALL PRODUCTS
-router.get('/', getAllProducts)
+router.get('/get', getAllProducts)
 
 // Create 
 router.post('/', verifyToken, verifyAdmin, createProduct)

@@ -1,9 +1,10 @@
 import React, { useContext } from 'react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import api from '../../axios/apiclient'
 import { login } from '../../axios/apis/authApi'
+import { getMyInfo } from '../redux/slices/mySlice'
 import NotFound from './NotFound'
 
 const Login = () => {
@@ -13,6 +14,7 @@ const Login = () => {
 
     const isLogged = false;
     const dispatch = useDispatch();
+    const navigate = useNavigate()
 
     
     if(isLogged)    return <NotFound/>
@@ -34,20 +36,15 @@ const Login = () => {
         return email.match(regex);
     }
 
-    const loginSubmit = async (e) => {
+    const loginSubmit = (e) => {
         e.preventDefault();
 
         if(!validateEmail(user.email))  return alert("Please enter a valid email.");  
                 
-        try {
-            const res = await login(user);
-            localStorage.setItem('token', res?.data?.accessToken);
+        login(user).then(() => {
+            navigate('/')
             dispatch(getMyInfo());
-            window.location.href = '/'
-        }
-        catch(err) {
-            alert(err?.response?.data?.msg)
-        }
+        }).catch(err => alert(err?.response?.data?.msg))
     }
 
 

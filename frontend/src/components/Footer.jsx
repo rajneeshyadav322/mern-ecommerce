@@ -4,7 +4,7 @@ import { Email, Facebook, Instagram, Phone, Twitter } from '@mui/icons-material'
 
 const Footer = () => {
   return (
-    <footer className='bg-teal-100 mt-6'>
+    <footer className='bg-teal-100'>
       <div className='mx-2 flex flex-wrap justify-between'>
         <div className='mt-4 flex flex-col py-2 px-4 md:w-1/3'>
           <div className='text-4xl '>E-Store</div>
