@@ -17,7 +17,7 @@ const ProductItem = ({ item }) => {
   };
 
   return (
-    <div className="relative w-96 m-2 bg-gray-100 hover:bg-gray-300  flex items-center justify-center p-4 ">
+    <div className="relative w-96 m-2 bg-gray-100 hover:bg-gray-300 flex items-center justify-center p-4 ">
       <img className="w-full" src={item.image} alt="Unable to load image" />
       <div className="absolute justify-center items-center opacity-0 hover:opacity-100 w-full h-full flex flex-row p-4">
         <div

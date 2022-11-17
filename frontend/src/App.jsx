@@ -32,7 +32,6 @@ const App = () => {
         <Route path='/history' element={<History/>}></Route>
         <Route path='/success' element={<Success />} /> 
         <Route path='cancel' element={<Cancel/>} />
-
         <Route path='*' exact element={<NotFound/>}> </Route>
       </Routes>
       <Footer />

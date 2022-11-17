@@ -1,6 +1,6 @@
 const express = require('express')
 const { verifyTokenAndAuthorization, verifyAdmin, verifyToken } = require('../controllers/verifyToken')
-const { createOrder, getAllOrders } = require('../controllers/order');
+const { createOrder, getAllOrders, getMyOrders } = require('../controllers/order');
 const router = express.Router();
 
 
@@ -9,7 +9,10 @@ router.post('/create', verifyToken, createOrder)
 
 
 // GET ALL ORDERS 
-router.get('/', verifyToken, verifyAdmin, getAllOrders)
+router.get('/getAll', verifyToken, verifyAdmin, getAllOrders)
+
+
+router.post('/history', verifyToken, getMyOrders)
 
 
 // // UPDATE

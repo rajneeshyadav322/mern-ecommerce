@@ -14,6 +14,8 @@ const Register = () => {
 
     // if(isLogged)    return <NotFound/>
 
+    if(token)    navigate(-1);
+
     const [user, setUser] = useState({
         username: "",
         email: "",

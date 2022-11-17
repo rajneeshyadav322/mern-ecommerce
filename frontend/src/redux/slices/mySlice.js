@@ -15,6 +15,7 @@ export const getMyInfo = createAsyncThunk('myInfo/get', async (thunkAPI) => {
                 Authorization: token
             }
         })
+        localStorage.setItem("email", res?.data?.email)
         return res?.data
     }
     catch (error) {

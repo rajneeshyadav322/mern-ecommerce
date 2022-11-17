@@ -6,7 +6,7 @@ export const createOrder = async (products, id) => {
       products: products,
       user_id: id,
     });
-    // console.log(res.data)
+    console.log(res?.data)
     window.location = res.data;
   } catch (err) {
     return console.log(err);

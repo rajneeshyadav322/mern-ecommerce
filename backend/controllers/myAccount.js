@@ -45,28 +45,24 @@ const updateCart = async (req, res) => {
 }
 
 const emptyCart = async (req, res) => {
+  
   try {
-    const user = await User.findById(req.user.id);
-    console.log(user);
+    await User.findOneAndUpdate({email: req.body.email}, {
+      products: []
+    })
 
-    if (!user) return res.status(400).json({ msg: "User does not exist." });
-
-    await User.findOneAndUpdate(
-      { _id: req.user.id },
-      {
-        cart: req.body.cart,
-      }
-    );
-
-    return res.status(200).json({ msg: "Removed items from the cart" });
-  } catch (err) {
-    return res.status(500).json({ msg: err.message });
+    return res.status(200).json({msg: "Cart updated successfully"})
+  }
+  catch(error) {
+    res.status(500).json({msg: error.message})
   }
 };
 
 const addToCart = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
+
+    console.log(user)
 
     if (!user) return res.status(400).json({ msg: "User does not exist." });
 
@@ -96,6 +92,8 @@ const addToCart = async (req, res) => {
     }
 
     user.subTotal += req.body.price;
+
+    console.log(user)
 
     await User.findOneAndUpdate(
       { _id: req.user.id },

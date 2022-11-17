@@ -26,9 +26,9 @@ const Products = () => {
     <div>
       <div className="text-4xl mt-4 text-center font-extralight">Products</div>
       {loading && <Loading />}
-      <div className="flex  flex-1 flex-wrap  m-6 justify-center">
+      <div className="flex  flex-1 flex-wrap  m-12 gap-4">
         {products?.map((item) => (
-          <ProductItem item={item} key={item?._id} />
+          <ProductItem  item={item} key={item?._id} />
         ))}
       </div>
     </div>

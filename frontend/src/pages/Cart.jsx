@@ -2,11 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import CartItem from "../components/CartItem";
 import { useSelector, useDispatch } from "react-redux";
-import api from "../../axios/apiclient";
-import { getMyCart } from "../redux/slices/cartSlice";
 import { getMyInfo, myReducer } from "../redux/slices/mySlice";
 import { updateCart } from "../../axios/apis/cartApi";
-import { useMemo } from "react";
 import store from "../redux/store";
 import { createOrder } from "../../axios/apis/orderApi";
 
@@ -39,8 +36,9 @@ const Cart = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const products = []
-
+    
+    const products = [];
+    
     info?.products?.forEach((element) => {
       const { title, image, price } = element?.product;
       products.push({
@@ -52,32 +50,35 @@ const Cart = () => {
       });
     });
 
-    createOrder(products, info._id).then(res => console.log(res))
+    createOrder(products, info._id).then((res) => console.log(res));
   };
 
   return (
-    <div>
-      <div className="text-center text-4xl font-light mt-8">Your Cart</div>
-      <div className="flex flex-wrap flex-1 gap-2 items-center justify-between m-8">
+    <div className="my-8">
+      <div className="text-center text-4xl font-light mt-4">Your Cart</div>
+      <div className="flex flex-wrap flex-1 gap-2 items-center justify-between m-8 p-4">
         <Link to="/products">
-          <button className="px-4 py-2  border-2 cursor-pointer hover:bg-black hover:text-white border-black">
+          <button className="py-2  border-2 w-44 cursor-pointer hover:bg-black hover:text-white border-black">
             Continue Shopping
           </button>
         </Link>
-        <button className="px-4 py-2 hover:bg-black hover:text-white border-2 cursor-pointer border-black">
+        <button
+          onClick={handleSubmit}
+          className="w-44 py-2 hover:bg-black hover:text-white border-2 cursor-pointer border-black"
+        >
           Checkout
         </button>
       </div>
 
-      <div className="flex flex-wrap mt-6 xsm:mx-3 sm:mx-8  justify-center">
-        <div className="md:flex-1 sm:p-8 w-full">
+      <div className="flex flex-wrap xsm:mx-3 sm:mx-8 justify-center">
+        <div className="md:flex-1 w-full">
           <div className="flex w-full p-4 items-center justify-between flex-col">
             {info?.products?.map((item) => (
               <CartItem item={item} key={item?.product?._id} />
             ))}
           </div>
         </div>
-        <div className="border-2 h-min lg:p-10 p-4 lg:m-4">
+        <div className="shadow-2xl h-min lg:p-10 p-4 lg:m-4">
           <div className="text-center font-light text-4xl">Order Summary</div>
           <div className="flex mt-4 justify-between">
             <div className="font-light text-xl">Sub Total</div>

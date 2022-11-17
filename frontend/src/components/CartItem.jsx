@@ -23,12 +23,12 @@ const CartItem = ({ item }) => {
 
     return (
         <div className='w-full'>
-            <div className='flex flex-wrap justify-between my-6 w-full'>
-                <div className='flex flex-wrap relative items-center p-2 border-2 w-full'>
+            <div className='flex flex-wrap justify-between mb-6 shadow-xl p-2 w-full'>
+                <div className='flex flex-wrap relative items-center p-2 w-full'>
                     <div onClick={() => removeProduct(item)} className='absolute top-0 cursor-pointer p-2 right-0'>
                         <CloseIcon />
                     </div>
-                    <img className='w-40' src={item?.product?.image} alt="Product Image" />
+                    <img className='w-36 h-40' src={item?.product?.image} alt="Product Image" />
                     <div className='flex flex-wrap justify-between flex-grow text-lg lg:text-xl ml-2 sm:ml-8'>
                         <div>
                             <div className=' '> <span className='font-semibold'>Product: </span>{item?.product?.title}</div>

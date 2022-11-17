@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import api from '../../axios/apiclient'
 import { login } from '../../axios/apis/authApi'
@@ -9,16 +9,12 @@ import NotFound from './NotFound'
 
 const Login = () => {
 
-    // const state = useContext(GlobalState)
-    // const isLogged = state.userApi.isLogged[0];
-
-    const isLogged = false;
+    const token = localStorage.getItem('token')
     const dispatch = useDispatch();
     const navigate = useNavigate()
 
-    
-    if(isLogged)    return <NotFound/>
-        
+    if(token)    navigate(-1);
+
     const [user, setUser] = useState({
         email: "",
         password: "",
@@ -42,8 +38,8 @@ const Login = () => {
         if(!validateEmail(user.email))  return alert("Please enter a valid email.");  
                 
         login(user).then(() => {
-            navigate('/')
             dispatch(getMyInfo());
+            navigate('/')
         }).catch(err => alert(err?.response?.data?.msg))
     }
 
